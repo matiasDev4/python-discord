@@ -30,7 +30,7 @@ client = commands.Bot(command_prefix="!", intents=intents)
 get = discord.utils.get
 
 
-@client.command(name="verificar")
+@client.command(name="verificar")    #Comando para crear el Embed del boton de VERIFICAR con el prefijo ' ! '
 async def verificar(ctx):
   await ctx.send(embed=discord.Embed(
 	  title="Verificacion de usuario",
@@ -38,18 +38,22 @@ async def verificar(ctx):
 	  color=discord.Color.green()
   ), view=verificacion())
 
-class verificacion(discord.ui.View):#Creacion de interfaz de boton para verificacion
+class verificacion(discord.ui.View):   #Creacion de interfaz de boton para verificacion
     @discord.ui.button(label="Verificar", style=discord.ButtonStyle.primary, emoji="📌")     
     async def button_callback(self:None, interaction:discord.Interaction, button):
 
-     user = interaction.user #Habilito interaccion del usuario
-     server = client.get_guild(1005204717128921119)#obtendo id del servidor
-     role = discord.utils.get(server.roles, name="Miembro")#obtengo roles del servidor
-     member = server.get_member(user.id)#obtengo id de usuario del servidor
-     await user.add_roles(role)#agrego rol a usuario desde mensaje privado
-     await interaction.response.send_message(f"👤 Verificado correctamente!, Ya sos Miembro del servidor", ephemeral=True)#Bot envia el mensaje")
-	
-class CerrarBoton(View):
+     user = interaction.user  #Habilito interaccion del usuario
+	    
+     server = client.get_guild(1005204717128921119)  #Se obtiene el id del servidor
+	    
+     role = discord.utils.get(server.roles, name="Miembro")  #Se obtienen los roles del servidor
+	    
+     member = server.get_member(user.id)  #Se obtiene el id de usuario del servidor
+	    
+     await interaction.response.send_message(f"👤 Verificado correctamente!, Ya sos Miembro del servidor", ephemeral=True)   #Bot envia el mensaje
+
+
+class CerrarBoton(View):   #Creo el boton para CERRAR el TICKET
   def __init__(self):
     super().__init__(timeout=None)
     
@@ -73,7 +77,9 @@ class CerrarBoton(View):
       ),
       view=delete()
       )
-class delete(View):
+
+
+class delete(View):  #Creo el boton para ELIMINAR el ticket
   def __init__(self):
     super().__init__(timeout=None)
     
@@ -85,7 +91,8 @@ class delete(View):
 
    await interaction.channel.delete()
 
-class CrearBoton(View):
+
+class CrearBoton(View):  #Creo el boton para CREAR el ticket
   def __init__(self):
     super().__init__(timeout=None)
     
@@ -127,13 +134,15 @@ class CrearBoton(View):
       ephemeral=True)
        return
 
-@client.command(name="ticket")
+
+@client.command(name="ticket")   #Comando para crear el EMBED para la creacion del ticket con el prefijo ' ! '
 @commands.has_permissions(administrator=True)
 async def ticket(ctx):
   embed=discord.Embed(description="Hey! necesitas algun soporte o ayuda?. Crea un ticket ↓")
   embed.set_footer(text="ArcangelNetwork")
   await ctx.send(embed=embed, view = CrearBoton())
-	
+
+
 @client.event
 async def on_ready():
    client.add_view(CrearBoton())
@@ -141,4 +150,5 @@ async def on_ready():
    client.add_view(delete())
    print("Bot listo")
 
+#Se inicia el bot
 client.run(token=token)
